@@ -1,0 +1,13 @@
+.container
+    .jumbotron
+        h1 WebFlow
+        h2 News for web-developers
+    .row
+        .col-md-6
+            .panel.panel-primary
+                .panel-heading.text-center Featured
+                .panel-body(ng-include="'/partials/main/featured-courses'")
+        .col-md-6
+            .panel.panel-primary
+                .panel-heading.text-center New
+                .panel-body(ng-include="'/partials/main/new-courses'")
