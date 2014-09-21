@@ -4,7 +4,7 @@ var express = require('express'),
     mongoose = require('mongoose');
 
 var env = process.env.NODE_ENV || 'development';
-var port = 3040;
+var port = process.env.PORT || 3030;
 
 var app = express();
 
@@ -22,9 +22,15 @@ app.use(stylus.middleware(
         }
     }
 ));
+
 app.use(express.static(__dirname + '/public'));
 
-mongoose.connect('mongodb://localhost/webflow');
+if (env == 'development') {
+    mongoose.connect('mongodb://localhost/webflow');
+} else {
+    mongoose.connect('mongodb://root:Hammer728746@ds039550.mongolab.com:39550/webflow');
+}
+console.log(env);
 var db = mongoose.connection;
 
 db.once('open', function (err) {
@@ -47,7 +53,7 @@ var messageFromDatabase;
 
 Message.remove({})
     .exec(function (err, model) {
-        if(err){
+        if (err) {
             console.log('Message could not be cleared: ' + err);
             return;
         }
@@ -58,8 +64,6 @@ Message.remove({})
                 messageFromDatabase = model.message;
             });
     });
-
-
 
 
 app.get('/partials/:partialName', function (req, res) {
