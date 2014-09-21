@@ -1,0 +1,26 @@
+{
+  "name": "webflow",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2HAMMER/WebFlow.git"
+  },
+  "author": "Anton Lunev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/2HAMMER/WebFlow/issues"
+  },
+  "homepage": "https://github.com/2HAMMER/WebFlow",
+  "dependencies": {
+    "body-parser": "^1.8.3",
+    "express": "^4.9.4",
+    "jade": "^1.7.0",
+    "mongoose": "^3.8.16",
+    "stylus": "^0.48.1"
+  }
+}
