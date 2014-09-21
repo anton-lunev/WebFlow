@@ -30,7 +30,6 @@ if (env == 'development') {
 } else {
     mongoose.connect('mongodb://root:Hammer728746@ds039550.mongolab.com:39550/webflow');
 }
-console.log(env);
 var db = mongoose.connection;
 
 db.once('open', function (err) {
