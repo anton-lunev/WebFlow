@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
     passport = require('passport'),
+    crypto = require('crypto'),
     LocalPassport = require('passport-local');
 
 module.exports = function (config) {
@@ -20,9 +21,15 @@ module.exports = function (config) {
     var userSchema = mongoose.Schema({
         username: String,
         firstName: String,
-        lastName: String
-        //salt: String,
-        //hashPass: String
+        lastName: String,
+        salt: String,
+        hashPass: String
+    });
+
+    userSchema.method({
+        authenticate: function (password) {
+            return generateHashedPassword(this.salt, password) === password;
+        }
     });
 
     var User = mongoose.model('User', userSchema);
@@ -31,11 +38,15 @@ module.exports = function (config) {
             console.log('Cannot find users: ' + err);
             return;
         }
-
         if (collection.length === 0) {
-            User.create({username: 'HAMMER', firstName: 'Anton', lastName: 'Lunev'});
-            User.create({username: 'Vasya', firstName: 'Vasya', lastName: 'Lunev'});
-            User.create({username: 'Test', firstName: 'Test', lastName: 'Testov'});
+            var salt;
+            var hashedPwd;
+
+            salt = generateSalt();
+            hashedPwd = generateHashedPassword(salt, 'HAMMER');
+            User.create({username: 'HAMMER', firstName: 'Anton', lastName: 'Lunev', salt: salt, hashPass: hashedPwd});
+            User.create({username: 'Vasya', firstName: 'Vasya', lastName: 'Lunev', salt: salt, hashPass: hashedPwd});
+            User.create({username: 'Test', firstName: 'Test', lastName: 'Testov', salt: salt, hashPass: hashedPwd});
         }
         console.log('Users added to database...')
     });
@@ -56,7 +67,7 @@ module.exports = function (config) {
     }));
 
     passport.serializeUser(function (user, done) {
-        if(user){
+        if (user) {
             return done(null, user._id);
         }
     });
@@ -76,3 +87,12 @@ module.exports = function (config) {
         })
     })
 };
+
+function generateSalt() {
+    return crypto.randomBytes(128).toString('base64');
+}
+
+function generateHashedPassword(salt, pwd) {
+    var hmac = crypto.createHmac('sha1', salt);
+    return hmac.update(pwd).digest('hex');
+}
